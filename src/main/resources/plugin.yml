@@ -1,0 +1,22 @@
+name: ClovesPluralCraft
+main: com.mazeymoos.cpc.ClovesPluralCraft
+version: 1.0.0
+api-version: 1.21
+author: CloveTwilight3
+description: "A Paper plugin for system-based roleplaying in Minecraft"
+commands:
+  system:
+    description: "Manage your system"
+    usage: "/system <create|rename|remove> [name]"
+    permission: clovespluralcraft.system
+  front:
+    description: "Manage your front"
+    usage: "/front <add|delete|set|clear> [name]"
+    permission: clovespluralcraft.front
+permissions:
+  clovespluralcraft.system:
+    description: "Allows players to manage their system"
+    default: true
+  clovespluralcraft.front:
+    description: "Allows players to manage their front"
+    default: true
