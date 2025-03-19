@@ -1,7 +1,7 @@
 package com.mazeymoos.cpc.commands;
 
 import com.mazeymoos.cpc.ClovesPluralCraft;
-import org.bukkit.Bukkit;
+// import com.mazeymoos.cpc.utils.SkinManager; - Work in Progress
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,7 +23,7 @@ public class FrontCommand implements CommandExecutor {
         UUID playerUUID = player.getUniqueId();
 
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /front <add|delete|set|clear> [name]");
+            sender.sendMessage(ChatColor.RED + "Usage: /front <add|delete|set|clear|skin> [name] [skin]");
             return true;
         }
 
@@ -48,13 +48,20 @@ public class FrontCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "Usage: /front set <name>");
                     return true;
                 }
-                setFront(playerUUID, args[1], sender);
+                setFront(player, args[1], sender);
                 break;
             case "clear":
                 clearFront(playerUUID, sender);
                 break;
+            case "skin":
+                if (args.length < 3) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /front skin <front> <skin (URL or Username)>");
+                    return true;
+                }
+                setFrontSkin(playerUUID, args[1], args[2], sender);
+                break;
             default:
-                sender.sendMessage(ChatColor.RED + "Unknown subcommand! Use /front <add|delete|set|clear>");
+                sender.sendMessage(ChatColor.RED + "Unknown subcommand! Use /front <add|delete|set|clear|skin>");
         }
         return true;
     }
@@ -79,11 +86,14 @@ public class FrontCommand implements CommandExecutor {
             return;
         }
         ClovesPluralCraft.systemDataMap.get(uuid).fronts.remove(frontName);
+        ClovesPluralCraft.systemDataMap.get(uuid).frontSkins.remove(frontName); // Remove associated skin
         ClovesPluralCraft.saveSystem(uuid);
         sender.sendMessage(ChatColor.GREEN + "Front '" + frontName + "' deleted!");
     }
 
-    private void setFront(UUID uuid, String frontName, CommandSender sender) {
+    private void setFront(Player player, String frontName, CommandSender sender) {
+        UUID uuid = player.getUniqueId();
+
         if (!ClovesPluralCraft.systemDataMap.containsKey(uuid)) {
             sender.sendMessage(ChatColor.RED + "You do not have a system!");
             return;
@@ -92,8 +102,17 @@ public class FrontCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "Front '" + frontName + "' does not exist!");
             return;
         }
+
         ClovesPluralCraft.systemDataMap.get(uuid).activeFront = frontName;
         ClovesPluralCraft.saveSystem(uuid);
+
+        // Apply skin when fronting
+        String skin = ClovesPluralCraft.systemDataMap.get(uuid).frontSkins.get(frontName);
+        if (skin != null && !skin.isEmpty()) {
+            player.sendMessage(ChatColor.YELLOW + "This has not been implemented yet!");
+            // SkinManager.applySkin(player, skin);
+        }
+
         sender.sendMessage(ChatColor.GREEN + "Now fronting as '" + frontName + "'!");
     }
 
@@ -105,5 +124,27 @@ public class FrontCommand implements CommandExecutor {
         ClovesPluralCraft.systemDataMap.get(uuid).activeFront = "";
         ClovesPluralCraft.saveSystem(uuid);
         sender.sendMessage(ChatColor.GREEN + "Front cleared!");
+    }
+
+    private void setFrontSkin(UUID uuid, String frontName, String skinInput, CommandSender sender) {
+        if (!ClovesPluralCraft.systemDataMap.containsKey(uuid)) {
+            sender.sendMessage(ChatColor.RED + "You do not have a system!");
+            return;
+        }
+        if (!ClovesPluralCraft.systemDataMap.get(uuid).fronts.containsKey(frontName)) {
+            sender.sendMessage(ChatColor.RED + "Front '" + frontName + "' does not exist!");
+            return;
+        }
+
+        ClovesPluralCraft.systemDataMap.get(uuid).frontSkins.put(frontName, skinInput);
+        ClovesPluralCraft.saveSystem(uuid);
+        sender.sendMessage(ChatColor.GREEN + "Skin set for front '" + frontName + "'!");
+
+        // Test the skin immediately if this is the active front
+        if (frontName.equals(ClovesPluralCraft.systemDataMap.get(uuid).activeFront)) {
+            Player player = (Player) sender;
+            player.sendMessage(ChatColor.YELLOW + "Applying skin...");
+            // SkinManager.applySkin(player, skinInput);
+        }
     }
 }

@@ -6,41 +6,49 @@
 
     <groupId>com.mazeymoos.cpc</groupId>
     <artifactId>clovespluralcraft</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>ClovesPluralCraft</name>
-    <description>A fun server plugin!</description>
+    <description>This plugin is for people that are plural, to help proxy their messages!</description>
 
     <repositories>
-        <!-- PaperMC Maven Repository -->
-        <repository>
-            <id>papermc</id>
-            <url>https://repo.papermc.io/repository/maven-public/</url>
-        </repository>
-
         <!-- Spigot Repository -->
         <repository>
-            <id>spigot-repo</id>
+            <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+        <!-- Mojang Repository (for AuthLib) -->
+        <repository>
+            <id>mojang</id>
+            <url>https://libraries.minecraft.net/</url>
+        </repository>
+
+        <!-- Sonatype (For CraftBukkit) -->
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+
+        <!-- SkinsRestorer Repository -->
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
     </repositories>
 
+
     <properties>
-        <java.version>22</java.version>
+        <java.version>21</java.version> <!-- Stick to Java 21 for stability -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
-        <!-- Paper API Dependency -->
-        <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.21.4-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Spigot API Dependency -->
+        <!-- Spigot API (Core API) -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -48,11 +56,34 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- BungeeCord Chat API for TextComponent -->
+        <!-- Mojang's AuthLib (For Player Profiles) -->
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.5.25</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- BungeeCord Chat API (For TextComponent & Messages) -->
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-chat</artifactId>
             <version>1.20-R0.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JSON API (For Parsing Mojang API Responses) -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20210307</version>
+        </dependency>
+
+        <!-- SkinsRestorer API -->
+        <dependency>
+            <groupId>net.skinsrestorer</groupId>
+            <artifactId>skinsrestorer-api</artifactId>
+            <version>15.0.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -66,11 +97,11 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>21</release>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
 
-            <!-- Shade Plugin -->
+            <!-- Shade Plugin (For Packaging JSON & AuthLib) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
