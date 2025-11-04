@@ -37,8 +37,10 @@ Clove's PluralCraft is a Minecraft mod/plugin that allows players to manage and 
 ## Configuration
 The plugin/mod generates a default `CPC/` folder. You can edit these files to customize behavior.
 
-
 ---
+
+## Help
+If you need help. [join our discord](https://discord.gg/k8HrBvDaQn)
 
 ## License
 This project is open-source under the **Apache-2.0 Licence**.
